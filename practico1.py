@@ -1,28 +1,17 @@
 import numpy as np
 
+def leer_palabras_archivo(nombre_archivo):
+    with open(nombre_archivo, 'r', encoding='utf-8') as f:
+        return {linea.strip() for linea in f}
+
+palabras_positivas = leer_palabras_archivo('positivas.txt')
+palabras_neutrales = leer_palabras_archivo('neutrales.txt')
+palabras_negativas = leer_palabras_archivo('negativas.txt')
+
 with open('frases.txt', 'r', encoding='utf-8') as f:
     frases = f.readlines()
 
 frases = [frase.strip() for frase in frases]
-
-palabras_positivas = {
-    "excelente", "gran", "positivo", "maravilloso", "increíble",
-    "feliz", "fantástico", "espléndido", "optimista", "alegría",
-    "éxito", "genial", "felicidad", "beneficio", "logro"
-}
-
-palabras_neutrales = {
-    "pérdida", "cambio", "necesidad", "circunstancia", "situación",
-    "espera", "moderado", "simple", "promedio", "condición",
-    "rutina", "transición", "detalles", "acción", "procedimiento"
-}
-
-palabras_negativas = {
-    "muerte", "luto", "fracaso", "depresión", "problema",
-    "triste", "negativo", "dolor", "sufrimiento", "miedo",
-    "pérdida", "caída", "daño", "error", "derrota"
-}
-
 
 def calcular_vectores(frase, positivas, neutrales, negativas):
     palabras = set(frase.lower().split())
