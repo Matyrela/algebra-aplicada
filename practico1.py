@@ -63,7 +63,8 @@ def producto_escalar(s):
 
 
 def promedio_sentimiento(s):
-    promedio = np.array([s[0] / len(s), s[1] / len(s), s[2] / len(s)])
+    total = s[0]+s[1]+s[2]
+    promedio = np.array([s[0] / total, s[1] / total, s[2] / total])
     return promedio
 
 
