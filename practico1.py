@@ -6,22 +6,23 @@ with open('frases.txt', 'r', encoding='utf-8') as f:
 frases = [frase.strip() for frase in frases]
 
 palabras_positivas = {
-    "excelente", "gran", "positivo", "maravilloso", "increíble", 
-    "feliz", "fantástico", "espléndido", "optimista", "alegría", 
+    "excelente", "gran", "positivo", "maravilloso", "increíble",
+    "feliz", "fantástico", "espléndido", "optimista", "alegría",
     "éxito", "genial", "felicidad", "beneficio", "logro"
 }
 
 palabras_neutrales = {
     "pérdida", "cambio", "necesidad", "circunstancia", "situación",
-    "espera", "moderado", "simple", "promedio", "condición", 
+    "espera", "moderado", "simple", "promedio", "condición",
     "rutina", "transición", "detalles", "acción", "procedimiento"
 }
 
 palabras_negativas = {
-    "muerte", "luto", "fracaso", "depresión", "problema", 
-    "triste", "negativo", "dolor", "sufrimiento", "miedo", 
+    "muerte", "luto", "fracaso", "depresión", "problema",
+    "triste", "negativo", "dolor", "sufrimiento", "miedo",
     "pérdida", "caída", "daño", "error", "derrota"
 }
+
 
 def calcular_vectores(frase, positivas, neutrales, negativas):
     palabras = set(frase.lower().split())
@@ -34,7 +35,7 @@ def calcular_vectores(frase, positivas, neutrales, negativas):
 
     s = np.array([
         np.sum([
-            palabra in palabras 
+            palabra in palabras
             for palabra in positivas
         ]),
 
@@ -51,20 +52,28 @@ def calcular_vectores(frase, positivas, neutrales, negativas):
 
     return w, s
 
+
 def avg(w):
     return np.mean(w)
 
-def promedio_sentimiento(s):
+
+def producto_escalar(s):
     sentimiento_base = np.array([1, 0, -1])
     return np.dot(sentimiento_base, s)
+
+
+def promedio_sentimiento(s):
+    promedio = np.array([s[0] / len(s), s[1] / len(s), s[2] / len(s)])
+    return promedio
+
 
 resultados = []
 
 for frase in frases:
     w, s = calcular_vectores(frase, palabras_positivas, palabras_neutrales, palabras_negativas)
     calidad = avg(w)
-    sentimiento = promedio_sentimiento(s)
-
+    sentimiento = producto_escalar(s)
+    promedio = promedio_sentimiento(s)
     resultados.append({
         "frase": frase,
         "w": w,
@@ -73,7 +82,8 @@ for frase in frases:
         "positiva": s[0],
         "neutra": s[1],
         "negativa": s[2],
-        "promedio_sentimiento": sentimiento
+        "producto_escalar": sentimiento,
+        "promedio_sentimiento": promedio
     })
 
 for resultado in resultados:
@@ -87,8 +97,8 @@ for resultado in resultados:
     print(f"Promedio de sentimiento: {resultado['promedio_sentimiento']}")
     print("\n")
 
-frase_mas_positiva = max(resultados, key=lambda x: x['promedio_sentimiento'])
-frase_mas_negativa = min(resultados, key=lambda x: x['promedio_sentimiento'])
+frase_mas_positiva = max(resultados, key=lambda x: x['producto_escalar'])
+frase_mas_negativa = min(resultados, key=lambda x: x['producto_escalar'])
 
 print(f"La frase más positiva es: '{frase_mas_positiva['frase']}'")
 print(f"La frase más negativa es: '{frase_mas_negativa['frase']}'")
